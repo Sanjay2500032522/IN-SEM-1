@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            text-align: center;
+            margin: 0;
+        }
+        header {
+            background: #243b55;
+            color: white;
+            padding: 20px;
+        }
+        form {
+            background: white;
+            padding: 25px;
+            margin: 30px auto;
+            width: 300px;
+            border-radius: 10px;
+        }
+        input, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        a { color: #0056b3; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Admin Panel</h1>
+    <p>Manage College Events</p>
+</header>
+
+<form id="eventForm">
+    <h2>Add New Event</h2>
+    <input type="text" id="eventName" placeholder="Event Name" required>
+    <input type="date" id="eventDate" required>
+    <input type="text" id="eventVenue" placeholder="Event Venue" required>
+    <button type="submit">Add Event</button>
+</form>
+
+<h2>Added Events</h2>
+<div id="eventList"></div>
+
+<p><a href="index.html">Home</a> | <a href="user.html">User Page</a></p>
+
+<script>
+    let events = JSON.parse(localStorage.getItem("events")) || [];
+
+    function displayEvents() {
+        document.getElementById("eventList").innerHTML = "";
+
+        events.forEach((event, index) => {
+            document.getElementById("eventList").innerHTML += `
+                <div style="background:white; margin:10px auto; padding:15px; max-width:350px;">
+                    <h3>${event.name}</h3>
+                    <p>Date: ${event.date}</p>
+                    <p>Venue: ${event.venue}</p>
+                    <button onclick="deleteEvent(${index})">Delete</button>
+                </div>`;
+        });
+    }
+
+    document.getElementById("eventForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        events.push({
+            name: document.getElementById("eventName").value,
+            date: document.getElementById("eventDate").value,
+            venue: document.getElementById("eventVenue").value
+        });
+
+        localStorage.setItem("events", JSON.stringify(events));
+        this.reset();
+        displayEvents();
+        alert("Event added successfully!");
+    });
+
+    function deleteEvent(index) {
+        events.splice(index, 1);
+        localStorage.setItem("events", JSON.stringify(events));
+        displayEvents();
+    }
+
+    displayEvents();
+</script>
+
+</body>
+</html>

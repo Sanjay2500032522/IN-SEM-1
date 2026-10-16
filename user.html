@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Events</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            text-align: center;
+            margin: 0;
+        }
+        header {
+            background: #243b55;
+            color: white;
+            padding: 20px;
+        }
+        .event {
+            background: white;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 350px;
+            border-radius: 10px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        a { color: #0056b3; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>College Events</h1>
+    <p>Explore and Register for Events</p>
+</header>
+
+<h2>Available Events</h2>
+<div id="eventList"></div>
+
+<h2>My Registrations</h2>
+<div id="registrations"></div>
+
+<p><a href="index.html">Home</a> | <a href="admin.html">Admin Panel</a></p>
+
+<script>
+    let events = JSON.parse(localStorage.getItem("events")) || [];
+    let registrations = JSON.parse(localStorage.getItem("registrations")) || [];
+
+    function displayEvents() {
+        const list = document.getElementById("eventList");
+        list.innerHTML = "";
+
+        if (events.length === 0) {
+            list.innerHTML = "<p>No events available yet.</p>";
+            return;
+        }
+
+        events.forEach((event, index) => {
+            list.innerHTML += `
+                <div class="event">
+                    <h3>${event.name}</h3>
+                    <p>Date: ${event.date}</p>
+                    <p>Venue: ${event.venue}</p>
+                    <input id="name${index}" placeholder="Enter your name">
+                    <button onclick="registerEvent(${index})">Register</button>
+                </div>`;
+        });
+    }
+
+    function registerEvent(index) {
+        const name = document.getElementById("name" + index).value.trim();
+
+        if (!name) {
+            alert("Please enter your name.");
+            return;
+        }
+
+        registrations.push({
+            name: name,
+            event: events[index].name
+        });
+
+        localStorage.setItem("registrations", JSON.stringify(registrations));
+        alert("Registration successful!");
+        displayRegistrations();
+    }
+
+    function displayRegistrations() {
+        const list = document.getElementById("registrations");
+        list.innerHTML = "";
+
+        if (registrations.length === 0) {
+            list.innerHTML = "<p>No registrations yet.</p>";
+            return;
+        }
+
+        registrations.forEach(reg => {
+            list.innerHTML += `
+                <div class="event">
+                    <p><b>${reg.name}</b> registered for ${reg.event}</p>
+                </div>`;
+        });
+    }
+
+    displayEvents();
+    displayRegistrations();
+</script>
+
+</body>
+</html>
